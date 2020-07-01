@@ -25,7 +25,7 @@ ssh -X username@ccur-frontal.univ.run
 ssh -X username@10.82.80.222
 ```
 
-Attention ne pas oublier l'option `-X` auqel cas GaussView ne peux fonctionner. 
+Attention ne pas oublier l'option `-X` auquel cas GaussView ne peut fonctionner.
 
 ### Environement modules
 
