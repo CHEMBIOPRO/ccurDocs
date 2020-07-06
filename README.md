@@ -3,8 +3,7 @@
 ## A faire
 
 - Parametrisation ORCA sur le ccur - files d'attentes - memoires
-- Pbm droit multi coeurs
-- Lancer un des scripts de bader : `[/home/fhoareau/Emilie_Boyer/From_Arnaud_Marvilliers/Hex_A0a_B0a_C1a`
+- Pbm droit multi coeurs.
 
 ## Tips
 
@@ -249,16 +248,18 @@ g09 < inputFile.com > outputFile.log
 
 ### PBS
 
+Créer le programme `launch.sh` suivant avec la configuration PBS souhaitée, dans le répertoire ou se situe vos fichiers d'input gaussian (.com) :
+
 ```bash
 #!/bin/bash
 # nb de chunks et coeurs
-#PBS -l select=1:ncpus=8
+#PBS -l select=4:ncpus=8
 # walltime
 #PBS -l walltime=80:00:00
-# #PBS –q longq
-# #PBS –j oe
+##PBS –q longq
+##PBS –j oe
 # nom du job
-#PBS -N demoG09
+#PBS -N SR_Der_Droite_mix_O
 # notification email : (b)eginning, (e)nd and (a)bortion
 #PBS -m bea
 # address email
@@ -284,11 +285,12 @@ echo ------------------------------------------------------
 
 # se placer dans le repertoire de travail
 cd $PBS_O_WORKDIR
-mkdir –p /gpfs/scratch/$USER/$PBS_JOBID
-# export PBS_TMPDIR=/gpfs/scratch/$USER/$PBS_JOBID
-export GAUSS_SCRDIR=/scratch/$USER/$PBS_JOBID
-# cp input $PBS_TMPDIR
-# cd $PBS_TMPDIR
+mkdir -p /gpfs/scratch/$USER/$PBS_JOBID
+export PBS_TMPDIR=/gpfs/scratch/$USER/$PBS_JOBID
+
+# export GAUSS_SCRDIR=/scratch/$USER/$PBS_JOBID
+cp ${file} $PBS_TMPDIR
+cd $PBS_TMPDIR
 
 # chargement des modules
 module purge
@@ -296,10 +298,17 @@ module load applications/gaussian/V9
 source $G09PROFILE
 
 # lancer l’exécutable
-g09 < /gpfs/scratch/mdelsaut/g09/H2_R2.com > output02.log
-cp * $PBS_O_WORKDIR
-# rm -rf $PBS_TMPDIR
+g09 < ${file} > ${file}.log
 
+cp * $PBS_O_WORKDIR
+rm -rf $PBS_TMPDIR
+
+```
+
+et lancer le programme avec :
+
+```bash
+qsub -v file='Cal_C_mix_S_1_Der-Dr_OH-1.com' launch.sh
 ```
 
 ## GaussView
